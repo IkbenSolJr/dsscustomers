@@ -1,0 +1,147 @@
+<odoo>
+  <data>
+<!-- Form view -->
+  <record model="ir.ui.view" id="ketoan_dsscustomers_view_form">
+      <field name="name">dsscustomers.ketoan.form</field>
+      <field name="model">dsscustomers.ketoan</field>
+      <field name="arch" type="xml">
+        <form create="false">
+        <header>
+        </header>
+          <sheet>
+              <group string="Thông tin">
+                    <group>
+                            <field name="khachhangkt_ids" readonly="1"/>
+                            <field name="sottktoan"/>                           
+                            <field name="masokh"/> 
+                            <field name="giaidoantt"/>
+                             <field name="emailkh"/>
+                            <field name="lanthanhtoan"/>
+                            <field name="ngaydukien"/>                            
+                            <field name="sotiendukien"/>      
+                    </group>   
+                     <group>                           
+                            <field name="ngaytt"/>                            
+                            <field name="sotientt"/>
+                            <field name="percentage" readonly="1"/>
+                            <field name="currency_id"
+                                                options="{'no_create': True, 'no_open': True}"
+                                                required="1" /> 
+                            <field name="ktcheck"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="teamphutrach"  readonly="1"/>
+                    </group>  
+              </group>  
+            </sheet>
+              <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+              </div>
+        </form>
+      </field>
+    </record>
+    <!-- list view-->
+    <record model="ir.ui.view" id="view_dsscustomers_ketoan_tree">
+      <field name="name">dsscustomers.ketoan.tree</field>
+      <field name="model">dsscustomers.ketoan</field>
+      <field name="arch" type="xml">
+        <!-- <tree create="false" editable="top" expand="1">   -->
+        <tree create="false">           
+                            <field name="sottktoan" optional="hide"/>                          
+                            <field name="khachhangkt_ids" readonly="1"/>
+                            <field name="masokh"/>
+                            <!-- <field name="phonekh" optional="hide"/>  -->
+                            <field name="visa" optional="hide"/>                       
+                            <field name="ngaychothd" optional="hide"/>
+                            <field name="phihopdong" optional="show"/>
+                            <field name="giaidoantt" optional="show" attrs="{'readonly':[('ktcheck','=',True)]}"/>
+                            <field name="lanthanhtoan" attrs="{'readonly':[('ktcheck','=',True)]}"/>     
+                            <field name="ngaydukien" attrs="{'readonly':[('ktcheck','=',True)]}"/>                           
+                            <field name="sotiendukien" sum="Total" attrs="{'readonly':[('ktcheck','=',True)]}"/>                           
+                            <field name="ngaytt" optional="show" attrs="{'readonly':[('ktcheck','=',True)]}"/>
+                            <field name="sotientt" sum="Total" attrs="{'readonly':[('ktcheck','=',True)]}"/>
+                            <field name="currency_id" attrs="{'readonly':[('ktcheck','=',True)]}"/>
+                            <field name="percentage" readonly="1" optional="show"/>
+                            <field name="ktcheck" optional="show" groups="dsscustomers.group_dsscustomers_ketoan_leader"/>
+                            <field name="user_id"  readonly="1" optional="hide"/>
+                            <field name="teamphutrach"  readonly="1" optional="hide"/>
+                            
+
+                            
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_customers_ketoan_pivot" model="ir.ui.view">
+    <field name="name">dsscustomers.ketoan.view.pivot</field>
+    <field name="model">dsscustomers.ketoan</field>
+    <field name="arch" type="xml">
+        <pivot string="Bảng thống kê" sample="1">
+            <field name="create_date" interval="month" type="row"/>
+            <field name="khachhangkt_ids" type="row"/>
+            <field name="giaidoantt" string ="Giai đoạn" type="col"/>
+            <field name="sotiendukien" type="measure"/>
+            <field name="sotientt" type="measure"/>
+            <field name="percentage" type="measure"/>
+        </pivot>
+    </field>
+    </record>
+
+     <record id="view_customers_ketoan_graph" model="ir.ui.view">
+            <field name="name">dsscustomers.ketoan.view.graph</field>
+            <field name="model">dsscustomers.ketoan</field>
+            <field name="arch" type="xml">
+                <graph string="Biểu đồ" sample="1">
+                    <field name="giaidoantt"/>
+                    <field name="sotiendukien" type="measure"/>
+                    <field name="sotientt" type="measure"/>
+                </graph>
+            </field>
+    </record>
+
+
+    <!-- Search -->
+        <record id="view_customers_ketoan_filter" model="ir.ui.view">
+            <field name="name">dsscustomers.ketoan.search</field>
+            <field name="model">dsscustomers.ketoan</field>
+            <field name="arch" type="xml">
+               <search string="Search">
+                    <field name="khachhangkt_ids" string="Tên Khách hàng"/>
+                    <field name="masokh"/>
+                    <field name="phonekh"/>
+                    <field name="visa"/>
+                    <filter string="Khách hàng" name="assigned_to_me"
+                        domain="" context="{'group_by':'khachhangkt_ids'}"/>     
+                     <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Khách hàng" name="khachhangkt_ids" context="{'group_by':'khachhangkt_ids'}"/>
+                        <filter string="Giai đoạn thanh toán" name="giaidoantt" context="{'group_by':'giaidoantt'}"/>
+                        <filter string="Visa" name="visa" context="{'group_by':'visa'}"/>
+                        <filter string="Ngày dự kiến" name="ngaydukien" context="{'group_by':'ngaydukien'}"/>
+                         <filter string="Ngày thực tế" name="ngaytt" context="{'group_by':'ngaytt'}"/>
+                         <filter string="Sale" name="user_id" context="{'group_by':'user_id'}"/>
+                        <filter string="Team Sale" name="teamphutrach" context="{'group_by':'teamphutrach'}"/> 
+                    </group>
+            </search>
+            </field>
+        </record>
+  <!-- Action -->
+    <record model="ir.actions.act_window" id="action_dsscustomers_ketoan">
+      <field name="name">Kế toán</field>
+      <field name="res_model">dsscustomers.ketoan</field>
+      <field name="view_mode">tree,form,pivot,graph</field>
+      <field name="context">{'search_default_assigned_to_me': 1}</field>
+      <field name="search_view_id" ref="dsscustomers.view_customers_ketoan_filter"/>
+    </record>
+
+  <!-- Menu -->
+    <menuitem name="Kế toán" 
+            id="dsscustomers_menu_6" 
+            parent="menu_dsscustomers_root"
+            action="action_dsscustomers_ketoan"
+            sequence="34"
+            groups="dsscustomers.group_dsscustomers_ketoan_user"/>
+ 
+  </data>
+</odoo>
